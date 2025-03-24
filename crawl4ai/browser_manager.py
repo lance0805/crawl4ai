@@ -94,6 +94,7 @@ class ManagedBrowser:
         host: str = "localhost",
         debugging_port: int = 9222,
         cdp_url: Optional[str] = None, 
+        extra_args: Optional[List[str]] = None,
     ):
         """
         Initialize the ManagedBrowser instance.
@@ -120,7 +121,7 @@ class ManagedBrowser:
         self.logger = logger
         self.shutting_down = False
         self.cdp_url = cdp_url
-
+        self.extra_args = extra_args
     async def start(self) -> str:
         """
         Starts the browser process or returns CDP endpoint URL.
@@ -252,7 +253,7 @@ class ManagedBrowser:
         else:
             raise NotImplementedError(f"Browser type {self.browser_type} not supported")
 
-        return base_args + args
+        return base_args + args + self.extra_args
 
     async def cleanup(self):
         """Cleanup browser process and temporary directory"""
@@ -415,6 +416,7 @@ class BrowserManager:
                 logger=self.logger,
                 debugging_port=self.config.debugging_port,
                 cdp_url=self.config.cdp_url,
+                extra_args=self.config.extra_args,
             )
 
     async def start(self):
